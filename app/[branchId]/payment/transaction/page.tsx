@@ -146,9 +146,83 @@ export default function PaymentTransactionPage() {
       setIsRetrying(false);
     };
 
+    // Demo simulation function
+    const simulateCefSharpResponses = () => {
+      const amount = updatedCart.AmountDue;
+      
+      if (amount > 1000) {
+        // Error states for amounts over 1000 TL
+        const errorResponses = [
+          { 
+            Type: CefSharpMessageType.VALIDATION_ERROR, 
+            Code: "400", 
+            Arg: "Validation error: Amount exceeds limit" 
+          },
+          { 
+            Type: CefSharpMessageType.PAYMENT_ERROR, 
+            Code: "500", 
+            Arg: "Payment processing failed" 
+          },
+          { 
+            Type: CefSharpMessageType.ORDER_SAVE_ERROR, 
+            Code: "501", 
+            Arg: "Order could not be saved" 
+          },
+          { 
+            Type: CefSharpMessageType.ECR_ERROR, 
+            Code: "502", 
+            Arg: "ECR communication error" 
+          },
+          { 
+            Type: CefSharpMessageType.ACTION_RESPONSE, 
+            Code: "503", 
+            Arg: "Action failed to complete" 
+          }
+        ];
+
+        errorResponses.forEach((response, index) => {
+          setTimeout(() => {
+            cefSharpMessageHandler(
+              response.Type,
+              response.Code,
+              response.Arg
+            );
+          }, index * 5000);
+        });
+      } else {
+        // Normal success flow for amounts under 1000 TL
+        // Show PaymentPending immediately
+        cefSharpMessageHandler(
+          CefSharpMessageType.PAYMENT_PENDING,
+          "101",
+          "Payment pending..."
+        );
+
+        // Schedule the rest of the states
+        const successResponses = [
+          { Type: CefSharpMessageType.PAYMENT_CONNECTING, Code: "100", Arg: "Connecting to terminal...", delay: 5000 },
+          { Type: CefSharpMessageType.PAYMENT_PRINTING, Code: "102", Arg: "Printing receipt...", delay: 10000 },
+          { Type: CefSharpMessageType.PAYMENT_SUCCESS, Code: "200", Arg: "Payment completed successfully", delay: 15000 }
+        ];
+
+        successResponses.forEach((response) => {
+          setTimeout(() => {
+            cefSharpMessageHandler(
+              response.Type,
+              response.Code,
+              response.Arg
+            );
+          }, response.delay);
+        });
+      }
+    };
+
     if (typeof window !== 'undefined') {
       (window as Window).handleCefSharpMessage = cefSharpMessageHandler;
+      // Start simulation
+      simulateCefSharpResponses();
     }
+
     try {
       if (typeof window !== 'undefined' && 'CefSharp' in window) {
         window.CefSharp.PostMessage({ saveOrder: updatedCart });
@@ -158,12 +232,12 @@ export default function PaymentTransactionPage() {
     } catch (error) {
       console.error("CefSharp iletişim hatası:", error);
     }
+
     return () => {
       if (typeof window !== 'undefined') {
         (window as Window).handleCefSharpMessage = () => '';
       }
     };
-
   }, []);
 
   // Ana menüye dönüş fonksiyonu
