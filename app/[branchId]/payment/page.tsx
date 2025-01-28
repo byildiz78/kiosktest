@@ -1,17 +1,22 @@
 "use client";
 
 import { useCartStore } from '@/store/cart';
-import { AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
-  CreditCardIcon,
+  ArrowLeft,
+  CreditCard as CreditCardIcon,
   Banknote,
+  CircleDollarSign,
   Wallet,
   Receipt,
   Store,
+  ShoppingCart,
+  Smartphone,
   StickyNote,
-  Smartphone
+  ChevronRight
 } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { Button } from '@/components/ui/button';
 import { useState, useRef, useCallback, useEffect } from 'react';
 import useBranchStore from '@/store/branch';
 import { PaymentMethod } from '@/types/branch';
@@ -22,13 +27,19 @@ import { OrderNotes } from '@/components/payment/steps/order-notes';
 import { DeviceNumber } from '@/components/payment/steps/device-number';
 import { PaymentMethod as PaymentMethodStep } from '@/components/payment/steps/payment-method';
 
-const paymentMethodIcons: { [key: string]: JSX.Element } = {
+const paymentMethodIcons: Record<string, JSX.Element> = {
   CREDIT_CARD: <CreditCardIcon className="w-8 h-8" />,
   MEAL_CARD: <Banknote className="w-8 h-8" />,
   SODEXO: <Wallet className="w-8 h-8" />,
   MULTINET: <Receipt className="w-8 h-8" />,
   SETCARD: <Store className="w-8 h-8" />
 };
+
+const steps = [
+  { icon: StickyNote, label: 'Sipariş Notu' },
+  { icon: Smartphone, label: 'Cihaz No' },
+  { icon: CreditCardIcon, label: 'Ödeme' }
+];
 
 export default function PaymentPage() {
   const { cart, updateCart } = useCartStore();
@@ -41,18 +52,15 @@ export default function PaymentPage() {
   const { setInputRef, setIsOpen } = useKeyboardStore();
   const noteInputRef = useRef<HTMLTextAreaElement>(null);
 
-  const steps = [
-    { icon: StickyNote, label: t.common.orderNotes },
-    { icon: Smartphone, label: t.common.selectedDevice },
-    { icon: CreditCardIcon, label: t.common.paymentMethod }
-  ];
-
+  // Auto focus and open keyboard when component mounts
   useEffect(() => {
     if (noteInputRef.current) {
       noteInputRef.current.value = cart.Notes || '';
+      noteInputRef.current.focus(); // Auto focus the input
       setInputRef(noteInputRef.current);
+      setIsOpen(true); // Open the virtual keyboard
     }
-  }, []);
+  }, [setInputRef, setIsOpen, cart.Notes]);
 
   const handleFocus = useCallback(() => {
     if (noteInputRef.current) {
@@ -105,55 +113,37 @@ export default function PaymentPage() {
         Type: paymentMethod.Type as 'CREDIT_CARD' | 'MEAL_CARD'
       }
     });
-    router.push('transaction');
+    router.push('payment/transaction');
   };
 
-  const progress = (step / 3) * 100;
-
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Background Image with Parallax Effect */}
-      <div 
-        className="fixed inset-0 bg-[url('https://images.unsplash.com/photo-1615799998603-7c6270a45196?q=80&w=2304')] bg-cover bg-center"
-        style={{ 
-          filter: 'brightness(0.1)',
-          transform: 'scale(1.1)',
-          transition: 'transform 0.5s ease-out'
-        }}
-      />
-      
-      {/* Animated Patterns */}
-      <div className="fixed inset-0">
-        <div className="absolute inset-0 bg-[url('/patterns/topography.svg')] bg-repeat opacity-5 animate-[move 20s linear infinite]" />
-        <div className="absolute inset-0 bg-[url('/patterns/circuit-board.svg')] bg-repeat opacity-5 animate-[move 15s linear infinite]" />
-      </div>
-      
-      {/* Gradient Overlays */}
-      <div className="fixed inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-background/95 to-primary/10" />
-        <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-background to-transparent" />
-        <div className="absolute bottom-0 left-0 w-full h-96 bg-gradient-to-t from-background to-transparent" />
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-white">
+      <div className="main-content">
+        {/* Background Patterns */}
+        <div className="fixed inset-0 pointer-events-none">
+          <div className="absolute inset-0 bg-[url('/patterns/topography.svg')] opacity-[0.02]" />
+          <div className="absolute top-0 -right-64 w-[40rem] h-[40rem] bg-gradient-to-br from-primary/5 to-primary/10 rounded-full blur-3xl opacity-30" />
+          <div className="absolute -bottom-32 -left-64 w-[50rem] h-[50rem] bg-gradient-to-tr from-primary/10 to-primary/5 rounded-full blur-3xl opacity-30" />
+        </div>
 
-      {/* Animated Blobs */}
-      <div className="fixed inset-0 overflow-hidden">
-        <div className="absolute top-1/4 -right-48 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-blob opacity-50" />
-        <div className="absolute top-3/4 -left-48 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-blob animation-delay-2000 opacity-50" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-blob animation-delay-4000 opacity-50" />
-      </div>
-
-      {/* Main Content */}
-      <div className="relative min-h-screen backdrop-blur-sm">
+        {/* Header */}
         <PaymentHeader
           totalAmount={cart.AmountDue}
-          progress={progress}
+          progress={(step / 3) * 100}
           onBack={() => router.back()}
           t={t}
         />
 
-        <div className="container mx-auto px-4 py-12 max-w-6xl relative">
-          <PaymentSteps steps={steps} currentStep={step} t={t} />
+        {/* Main Content */}
+        <div className="container mx-auto px-4 py-8">
+          {/* Progress Steps */}
+          <PaymentSteps
+            steps={steps}
+            currentStep={step}
+            t={t}
+          />
 
+          {/* Step Content */}
           <AnimatePresence mode="wait">
             {step === 1 ? (
               <OrderNotes
@@ -176,8 +166,8 @@ export default function PaymentPage() {
                 callNumber={cart.CallNumber || ''}
                 paymentMethods={branchData?.PaymentMethods || []}
                 onSelect={handlePaymentMethodSelect}
-                paymentMethodIcons={paymentMethodIcons}
                 t={t}
+                paymentMethodIcons={paymentMethodIcons}
               />
             )}
           </AnimatePresence>

@@ -33,7 +33,7 @@ const LanguageSwitcher = () => {
 
       {/* Language Options */}
       <div className="flex justify-center">
-        <div className="flex gap-3 p-3 rounded-2xl bg-white/15 backdrop-blur-md border border-white/30 shadow-2xl">
+        <div className="flex gap-3 p-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-2xl">
           {branchData?.Languages?.map((language) => (
             <motion.button
               key={language.Key}
@@ -111,16 +111,12 @@ export default function WelcomePage() {
           loop
           muted
           playsInline
-          style={{
-            height: '100vh',
-            width: '100%',
-            objectFit: 'cover',
-            position: 'absolute'
-          }}
+          className="absolute inset-0 w-full h-full object-cover"
         >
           <source src="/tavukdunyasi.webm" type="video/webm" />
         </video>
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" />
+        {/* Subtle dark overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/30" />
       </div>
 
       {/* Language Switcher - Always visible */}
