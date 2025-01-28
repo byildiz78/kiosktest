@@ -3,7 +3,7 @@
 
 import { CartSheet } from '@/components/cart-sheet';
 import { useCartStore } from '@/store/cart';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Price } from '../ui/price';
 import { ShoppingBag, Trash2, ChevronUp } from 'lucide-react';
 import { Button } from '../ui/button';
