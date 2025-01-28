@@ -42,8 +42,8 @@ export function CartFooter() {
       <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/80 to-transparent -top-20 pointer-events-none backdrop-blur-sm" />
       
       {/* Main content */}
-      <div className="relative bg-card/80 backdrop-blur-md border-t shadow-2xl p-4">
-        <div className="container flex items-center justify-between gap-4">
+      <div className="relative bg-card border-t shadow-2xl p-4" style={{backdropFilter: 'blur(16px)', backgroundColor: 'rgba(255,255,255,0.9)'}}>
+        <div className="container grid grid-cols-3 items-center">
           <div className="flex items-center gap-3">
             {/* Pull up handle */}
             <div className="hidden md:flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary">
@@ -82,8 +82,17 @@ export function CartFooter() {
             </AlertDialog>
           </div>
 
-          {/* Cart info and show cart button */}
-          <div className="flex items-center gap-4">
+          {/* Total amount - centered */}
+          <div className="flex flex-col items-center justify-center">
+            <p className="text-sm text-muted-foreground font-medium">{t.common.total}</p>
+            <Price 
+              amount={cart.AmountDue} 
+              className="text-3xl font-bold bg-gradient-to-r from-primary via-primary/90 to-primary bg-clip-text text-transparent" 
+            />
+          </div>
+
+          {/* Cart info and show cart button - right aligned */}
+          <div className="flex justify-end">
             <CartSheet>
               <Button 
                 size="lg" 
@@ -95,15 +104,7 @@ export function CartFooter() {
                 </span>
               </Button>
             </CartSheet>
-            
-            {/* Total amount */}
-            <div className="text-right">
-              <p className="text-sm text-muted-foreground font-medium">{t.common.total}</p>
-              <Price 
-                amount={cart.AmountDue} 
-                className="text-2xl font-bold bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent" 
-              />
-            </div>
+          </div>
           </div>
         </div>
       </div>
