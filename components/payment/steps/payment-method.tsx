@@ -1,6 +1,7 @@
+
 "use client";
 
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { CreditCardIcon, StickyNote, Smartphone, Wallet, ChevronRight, CircleDollarSign } from 'lucide-react';
 import { PaymentMethod as PaymentMethodType } from '@/types/branch';
 import { useRouter } from 'next/navigation';
@@ -19,7 +20,6 @@ export function PaymentMethod({ notes, callNumber, paymentMethods, onSelect, t, 
   const router = useRouter();
   const { cart } = useCartStore();
   
-  // Separate payment methods by type
   const creditCardMethods = paymentMethods.filter(method => method.Type === 'CREDIT_CARD');
   const mealCardMethods = paymentMethods.filter(method => method.Type === 'MEAL_CARD');
 
@@ -30,158 +30,158 @@ export function PaymentMethod({ notes, callNumber, paymentMethods, onSelect, t, 
 
   const PaymentMethodCard = ({ method }: { method: PaymentMethodType }) => (
     <motion.button
-      whileHover={{ scale: 1.02, y: -5 }}
-      whileTap={{ scale: 0.98 }}
+      whileHover={{ scale: 1.03 }}
+      whileTap={{ scale: 0.97 }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
       onClick={() => handlePaymentMethodSelect(method)}
-      className="group relative w-full"
+      className="group relative w-full overflow-hidden"
     >
-      {/* Animated background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-primary/10 to-transparent rounded-xl opacity-0 group-hover:opacity-100 blur-xl transition-all duration-500" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-primary/5 opacity-0 group-hover:opacity-100 transition-all duration-500 rounded-2xl" />
       
-      {/* Card content */}
-      <div className="relative bg-white/50 backdrop-blur-sm rounded-xl border border-white/20 p-6 shadow-lg hover:shadow-xl transition-all duration-300">
-        <div className="flex items-center gap-4">
-          {/* Icon container with glow effect */}
+      <div className="relative bg-white/80 backdrop-blur-lg rounded-2xl border border-gray-100 p-6 shadow-lg hover:shadow-2xl transition-all duration-300">
+        <div className="flex items-center gap-6">
           <div className="relative">
-            <div className="absolute inset-0 bg-primary/20 rounded-lg blur group-hover:blur-md transition-all" />
-            <div className="relative w-16 h-16 rounded-lg bg-primary/10 flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
-              {paymentMethodIcons[method.Type] || <CreditCardIcon className="w-8 h-8 text-primary" />}
+            <div className="absolute inset-0 bg-primary/20 rounded-xl blur-lg group-hover:blur-xl transition-all" />
+            <div className="relative w-20 h-20 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+              {paymentMethodIcons[method.Type] || <CreditCardIcon className="w-10 h-10 text-primary" />}
             </div>
           </div>
           
-          {/* Text content */}
-          <div className="flex-1 text-left min-w-0">
-            <h3 className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 group-hover:from-primary group-hover:to-primary/80 bg-clip-text text-transparent transition-all duration-300 truncate">
+          <div className="flex-1 text-left">
+            <h3 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-primary bg-clip-text text-transparent transition-all duration-300">
               {method.PaymentName}
             </h3>
-            <p className="text-sm text-gray-500 group-hover:text-primary/70 transition-colors truncate">
+            <p className="text-base text-gray-600 group-hover:text-primary/80 transition-colors mt-1">
               {method.Name}
             </p>
           </div>
 
-          {/* Arrow indicator */}
-          <ChevronRight className="w-6 h-6 text-gray-400 group-hover:text-primary transition-colors transform group-hover:translate-x-1" />
+          <ChevronRight className="w-8 h-8 text-gray-400 group-hover:text-primary transition-colors transform group-hover:translate-x-2" />
         </div>
       </div>
     </motion.button>
   );
 
   return (
-    <motion.div
-      key="payment"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      className="max-w-5xl mx-auto space-y-8"
-    >
-      {/* Order Info and Amount */}
-      <div className="grid md:grid-cols-3 gap-6">
-        {/* Order Notes */}
-        <motion.div
-          initial={{ y: -20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          className="bg-white/50 backdrop-blur-sm rounded-xl border border-white/20 p-4 shadow-lg"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <StickyNote className="w-5 h-5 text-primary" />
+    <AnimatePresence>
+      <motion.div
+        key="payment"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="max-w-6xl mx-auto space-y-8 p-6"
+      >
+        <div className="grid md:grid-cols-3 gap-6">
+          <motion.div
+            initial={{ x: -20, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            className="bg-white/80 backdrop-blur-lg rounded-2xl border border-gray-100 p-6 shadow-lg"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                <StickyNote className="w-6 h-6 text-primary" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">{t.common.orderNotes}</p>
+                <p className="text-base font-medium text-gray-900">
+                  {notes || t.common.noOrderNotes}
+                </p>
+              </div>
             </div>
-            <div className="min-w-0">
-              <p className="text-xs text-gray-500">{t.common.orderNotes}</p>
-              <p className="text-sm font-medium truncate">
-                {notes || t.common.noOrderNotes}
-              </p>
-            </div>
-          </div>
-        </motion.div>
+          </motion.div>
 
-        {/* Device Number */}
-        <motion.div
-          initial={{ y: -20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.1 }}
-          className="bg-white/50 backdrop-blur-sm rounded-xl border border-white/20 p-4 shadow-lg"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <Smartphone className="w-5 h-5 text-primary" />
+          <motion.div
+            initial={{ y: -20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.1 }}
+            className="bg-white/80 backdrop-blur-lg rounded-2xl border border-gray-100 p-6 shadow-lg"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                <Smartphone className="w-6 h-6 text-primary" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">{t.common.selectedDevice}</p>
+                <p className="text-2xl font-bold text-primary">{callNumber}</p>
+              </div>
             </div>
-            <div>
-              <p className="text-xs text-gray-500">{t.common.selectedDevice}</p>
-              <p className="text-lg font-bold text-primary">{callNumber}</p>
-            </div>
-          </div>
-        </motion.div>
+          </motion.div>
 
-        {/* Total Amount */}
-        <motion.div
-          initial={{ y: -20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="bg-white/50 backdrop-blur-sm rounded-xl border border-white/20 p-4 shadow-lg"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <CircleDollarSign className="w-5 h-5 text-primary" />
+          <motion.div
+            initial={{ x: 20, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="bg-white/80 backdrop-blur-lg rounded-2xl border border-gray-100 p-6 shadow-lg"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                <CircleDollarSign className="w-6 h-6 text-primary" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">{t.common.amountToPay}</p>
+                <p className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+                  ₺ {cart.AmountDue.toFixed(2)}
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="text-xs text-gray-500">{t.common.amountToPay}</p>
-              <p className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-                ₺ {cart.AmountDue.toFixed(2)}
-              </p>
-            </div>
-          </div>
-        </motion.div>
-      </div>
+          </motion.div>
+        </div>
 
-      {/* Payment Methods Sections */}
-      <div className="space-y-6">
-        {/* Credit Cards Section */}
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="bg-white/50 backdrop-blur-sm rounded-xl border border-white/20 p-6 shadow-lg"
-        >
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-              <CreditCardIcon className="w-6 h-6 text-primary" />
+        <div className="space-y-8">
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="bg-white/80 backdrop-blur-lg rounded-2xl border border-gray-100 p-8 shadow-lg"
+          >
+            <div className="flex items-center gap-6 mb-8">
+              <div className="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center">
+                <CreditCardIcon className="w-8 h-8 text-primary" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-primary bg-clip-text text-transparent">
+                  Kredi Kartı
+                </h2>
+                <p className="text-gray-600">
+                  Kredi kartı ile güvenli ödeme yapın
+                </p>
+              </div>
             </div>
-            <div>
-              <h2 className="text-xl font-bold text-gray-900">Kredi Kartı</h2>
-              <p className="text-sm text-gray-500">Kredi kartı ile güvenli ödeme yapın</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {creditCardMethods.map((method) => (
+                <PaymentMethodCard key={method.PaymentMethodKey} method={method} />
+              ))}
             </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {creditCardMethods.map((method) => (
-              <PaymentMethodCard key={method.PaymentMethodKey} method={method} />
-            ))}
-          </div>
-        </motion.div>
+          </motion.div>
 
-        {/* Meal Cards Section */}
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="bg-white/50 backdrop-blur-sm rounded-xl border border-white/20 p-6 shadow-lg"
-        >
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-              <Wallet className="w-6 h-6 text-primary" />
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="bg-white/80 backdrop-blur-lg rounded-2xl border border-gray-100 p-8 shadow-lg"
+          >
+            <div className="flex items-center gap-6 mb-8">
+              <div className="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center">
+                <Wallet className="w-8 h-8 text-primary" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-primary bg-clip-text text-transparent">
+                  Yemek Kartları
+                </h2>
+                <p className="text-gray-600">
+                  Yemek kartı ile hızlı ödeme yapın
+                </p>
+              </div>
             </div>
-            <div>
-              <h2 className="text-xl font-bold text-gray-900">Yemek Kartları</h2>
-              <p className="text-sm text-gray-500">Yemek kartı ile hızlı ödeme yapın</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {mealCardMethods.map((method) => (
+                <PaymentMethodCard key={method.PaymentMethodKey} method={method} />
+              ))}
             </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {mealCardMethods.map((method) => (
-              <PaymentMethodCard key={method.PaymentMethodKey} method={method} />
-            ))}
-          </div>
-        </motion.div>
-      </div>
-    </motion.div>
+          </motion.div>
+        </div>
+      </motion.div>
+    </AnimatePresence>
   );
 }
