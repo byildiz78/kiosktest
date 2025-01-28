@@ -30,26 +30,26 @@ export function PaymentMethod({ notes, callNumber, paymentMethods, onSelect, t, 
 
   const PaymentMethodCard = ({ method }: { method: PaymentMethodType }) => (
     <motion.button
-      whileHover={{ scale: 1.03 }}
-      whileTap={{ scale: 0.97 }}
+      whileHover={{ scale: 1.02, y: -5 }}
+      whileTap={{ scale: 0.98 }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       onClick={() => handlePaymentMethodSelect(method)}
       className="group relative w-full overflow-hidden"
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-primary/5 opacity-0 group-hover:opacity-100 transition-all duration-500 rounded-2xl" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 rounded-2xl" />
       
-      <div className="relative bg-white/80 backdrop-blur-lg rounded-2xl border border-gray-100 p-6 shadow-lg hover:shadow-2xl transition-all duration-300">
+      <div className="relative bg-white/90 backdrop-blur-xl rounded-2xl border border-gray-100/50 p-6 shadow-lg hover:shadow-xl transition-all duration-300">
         <div className="flex items-center gap-6">
           <div className="relative">
-            <div className="absolute inset-0 bg-primary/20 rounded-xl blur-lg group-hover:blur-xl transition-all" />
-            <div className="relative w-20 h-20 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+            <div className="absolute inset-0 bg-primary/30 rounded-xl blur-lg group-hover:blur-xl transition-all" />
+            <div className="relative w-20 h-20 rounded-xl bg-gradient-to-br from-primary/30 via-primary/20 to-primary/10 flex items-center justify-center transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
               {paymentMethodIcons[method.Type] || <CreditCardIcon className="w-10 h-10 text-primary" />}
             </div>
           </div>
           
           <div className="flex-1 text-left">
-            <h3 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-primary bg-clip-text text-transparent transition-all duration-300">
+            <h3 className="text-2xl font-bold bg-gradient-to-br from-gray-900 via-primary to-primary/80 bg-clip-text text-transparent transition-all duration-300">
               {method.PaymentName}
             </h3>
             <p className="text-base text-gray-600 group-hover:text-primary/80 transition-colors mt-1">
@@ -76,10 +76,10 @@ export function PaymentMethod({ notes, callNumber, paymentMethods, onSelect, t, 
           <motion.div
             initial={{ x: -20, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            className="bg-white/80 backdrop-blur-lg rounded-2xl border border-gray-100 p-6 shadow-lg"
+            className="bg-white/90 backdrop-blur-xl rounded-2xl border border-gray-100/50 p-6 shadow-lg hover:shadow-xl transition-all duration-300"
           >
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
                 <StickyNote className="w-6 h-6 text-primary" />
               </div>
               <div>
@@ -95,15 +95,17 @@ export function PaymentMethod({ notes, callNumber, paymentMethods, onSelect, t, 
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.1 }}
-            className="bg-white/80 backdrop-blur-lg rounded-2xl border border-gray-100 p-6 shadow-lg"
+            className="bg-white/90 backdrop-blur-xl rounded-2xl border border-gray-100/50 p-6 shadow-lg hover:shadow-xl transition-all duration-300"
           >
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
                 <Smartphone className="w-6 h-6 text-primary" />
               </div>
               <div>
                 <p className="text-sm text-gray-500">{t.common.selectedDevice}</p>
-                <p className="text-2xl font-bold text-primary">{callNumber}</p>
+                <p className="text-2xl font-bold bg-gradient-to-br from-gray-900 to-primary bg-clip-text text-transparent">
+                  {callNumber}
+                </p>
               </div>
             </div>
           </motion.div>
@@ -112,15 +114,15 @@ export function PaymentMethod({ notes, callNumber, paymentMethods, onSelect, t, 
             initial={{ x: 20, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="bg-white/80 backdrop-blur-lg rounded-2xl border border-gray-100 p-6 shadow-lg"
+            className="bg-white/90 backdrop-blur-xl rounded-2xl border border-gray-100/50 p-6 shadow-lg hover:shadow-xl transition-all duration-300"
           >
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
                 <CircleDollarSign className="w-6 h-6 text-primary" />
               </div>
               <div>
                 <p className="text-sm text-gray-500">{t.common.amountToPay}</p>
-                <p className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+                <p className="text-3xl font-bold bg-gradient-to-br from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent">
                   ₺ {cart.AmountDue.toFixed(2)}
                 </p>
               </div>
@@ -133,14 +135,14 @@ export function PaymentMethod({ notes, callNumber, paymentMethods, onSelect, t, 
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="bg-white/80 backdrop-blur-lg rounded-2xl border border-gray-100 p-8 shadow-lg"
+            className="bg-white/90 backdrop-blur-xl rounded-2xl border border-gray-100/50 p-8 shadow-lg hover:shadow-xl transition-all duration-300"
           >
             <div className="flex items-center gap-6 mb-8">
-              <div className="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center">
+              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
                 <CreditCardIcon className="w-8 h-8 text-primary" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-primary bg-clip-text text-transparent">
+                <h2 className="text-2xl font-bold bg-gradient-to-br from-gray-900 via-primary to-primary/80 bg-clip-text text-transparent">
                   Kredi Kartı
                 </h2>
                 <p className="text-gray-600">
@@ -159,14 +161,14 @@ export function PaymentMethod({ notes, callNumber, paymentMethods, onSelect, t, 
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="bg-white/80 backdrop-blur-lg rounded-2xl border border-gray-100 p-8 shadow-lg"
+            className="bg-white/90 backdrop-blur-xl rounded-2xl border border-gray-100/50 p-8 shadow-lg hover:shadow-xl transition-all duration-300"
           >
             <div className="flex items-center gap-6 mb-8">
-              <div className="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center">
+              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
                 <Wallet className="w-8 h-8 text-primary" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-primary bg-clip-text text-transparent">
+                <h2 className="text-2xl font-bold bg-gradient-to-br from-gray-900 via-primary to-primary/80 bg-clip-text text-transparent">
                   Yemek Kartları
                 </h2>
                 <p className="text-gray-600">
